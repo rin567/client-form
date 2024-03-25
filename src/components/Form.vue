@@ -1,13 +1,14 @@
 <template>
-	<div class="form-container">
-		<form>
-			<legend>Создание нового клиента</legend>
-			<Main-info />
-			<Addr-info />
-			<Pass-info />
-			<Button />
-		</form>
-	</div>
+	<form>
+		<legend>Создание нового клиента</legend>
+		<span>Основная информация</span>
+		<Main-info />
+		<span>Адрес</span>
+		<Addr-info />
+		<span>Паспортные данные</span>
+		<Pass-info />
+		<Button />
+	</form>
 </template>
 
 <script lang="ts">
@@ -31,8 +32,9 @@ export default {
 			surName: '',
 			birth: '',
 			phoneNumber: '',
-			gender: ['Мужской', 'Женский'],
-			group: ['VIP', 'Проблемные', 'ОМС'],
+			gender: '',
+			selectGroup: '',
+			doctor: '',
 			sendSMS: false,
 			index: '',
 			country: '',
@@ -40,7 +42,7 @@ export default {
 			street: '',
 			city: '',
 			building: '',
-			identifier: ['Паспорт', 'Свидетельство о рождении', 'Вод. удостоверение'],
+			identifier: '',
 			passSeries: '',
 			passNumber: '',
 			placeOfIssue: '',
@@ -51,20 +53,21 @@ export default {
 </script>
 
 <style lang="sass">
-.form-container
-	height: 100vh
-	display: flex
-	align-items: center
-	justify-content: center
 form
-	width: 500px
-	height: 400px
-	border-radius: 10px
-	background-color: white
-	box-sizing: border-box
-	margin: 2%
-	padding: 3%
-	box-shadow: 0 0 20px 1px rgba(0, 0 ,0, 0.2)
+  display: flex
+  flex-flow: column wrap
+  gap: 1rem
+  flex: min-content
+  max-width: 800px
+  border-radius: 10px
+  background-color: white
+  box-sizing: border-box
+  margin: 2%
+  padding: 3%
+  box-shadow: 0 0 20px 1px rgba(0, 0 ,0, 0.2)
 legend
-	color: gray
+  font-size: 1.5rem
+span
+  font-size: 1rem
+  color: rgb(5, 5, 215)
 </style>
