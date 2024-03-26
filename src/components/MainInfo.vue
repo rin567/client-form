@@ -5,13 +5,13 @@
 			<Input label="Имя" />
 			<Input label="Отчество" />
 			<Input label="Дата рождения" />
+			<div class="mainInfoItem">
+				<span>Пол</span>
+				<Checkbox label="Женщина" name="female" />
+				<Checkbox label="Мужчина" name="male" />
+			</div>
 			<Input label="Номер телефона" />
 			<Checkbox class="padding" label="Не отправлять СМС" name="sendSMS" />
-		</div>
-		<span>Пол</span>
-		<div class="mainInfoItem">
-			<Checkbox label="Женщина" name="female" />
-			<Checkbox label="Мужчина" name="male" />
 		</div>
 		<div class="mainInfoItem">
 			<Select :options="group" label="Группа клиентов" name="selectGroup" />

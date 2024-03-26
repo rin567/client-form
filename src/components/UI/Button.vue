@@ -10,6 +10,7 @@ export default {
 
 <style lang="sass">
 .c-button
+  width: min-content
   appearance: none
   border: 0
   border-radius: 5px

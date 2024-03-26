@@ -2,11 +2,11 @@
 	<form>
 		<legend>Создание нового клиента</legend>
 		<span>Основная информация</span>
-		<Main-info />
+		<Main-info :mainInfoData="mainInfoData" />
 		<span>Адрес</span>
-		<Addr-info />
+		<Addr-info :addrInfoData="addrInfoData" />
 		<span>Паспортные данные</span>
-		<Pass-info />
+		<Pass-info :passInfoData="passInfoData" />
 		<Button />
 	</form>
 </template>
@@ -27,26 +27,32 @@ export default {
 	},
 	data: function () {
 		return {
-			firstName: '',
-			lastName: '',
-			surName: '',
-			birth: '',
-			phoneNumber: '',
-			gender: '',
-			selectGroup: '',
-			doctor: '',
-			sendSMS: false,
-			index: '',
-			country: '',
-			region: '',
-			street: '',
-			city: '',
-			building: '',
-			identifier: '',
-			passSeries: '',
-			passNumber: '',
-			placeOfIssue: '',
-			dateOfIssue: '',
+			mainInfoData: {
+				firstName: '',
+				lastName: '',
+				surName: '',
+				birth: '',
+				phoneNumber: '',
+				gender: '',
+				selectGroup: '',
+				selectDoctor: '',
+				sendSMS: false,
+			},
+			addrInfoData: {
+				index: '',
+				country: '',
+				region: '',
+				street: '',
+				city: '',
+				building: '',
+			},
+			passInfoData: {
+				identifier: '',
+				passSeries: '',
+				passNumber: '',
+				placeOfIssue: '',
+				dateOfIssue: '',
+			},
 		}
 	},
 }
@@ -57,12 +63,11 @@ form
   display: flex
   flex-flow: column wrap
   gap: 1rem
-  flex: min-content
-  max-width: 800px
+  max-width: 742px
   border-radius: 10px
   background-color: white
   box-sizing: border-box
-  margin: 2%
+  margin: 5%
   padding: 3%
   box-shadow: 0 0 20px 1px rgba(0, 0 ,0, 0.2)
 legend
@@ -70,4 +75,6 @@ legend
 span
   font-size: 1rem
   color: rgb(5, 5, 215)
+Button
+  justify-self: center
 </style>
