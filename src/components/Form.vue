@@ -1,65 +1,107 @@
 <template>
-	<form>
+	<form class="client-form">
 		<legend>Создание нового клиента</legend>
 		<span>Основная информация</span>
-		<Main-info :mainInfoData="mainInfoData" />
+		<div class="mainInfoContainer">
+			<Input label="Фамилия*" type="text" v-model.trim="$v.lastName.$model" />
+			<div class="error" v-if="!$v.lastName.required">Field is required</div>
+			<div class="error" v-if="!$v.lastName.minLength">
+				Name must have at least {{ $v.lastName.$params.minLength.min }} letters.
+			</div>
+			<Input label="Имя*" type="text" v-model="firstName" />
+			<Input label="Отчество" type="text" v-model="surName" />
+			<Input label="Дата рождения*" type="date" v-model="birth" />
+			<span>Пол</span>
+			<Checkbox label="Женщина" name="female" />
+			<Checkbox label="Мужчина" name="male" />
+			<Input label="Номер телефона*" type="tel" v-model="phoneNumber" />
+			<Checkbox label="Не отправлять СМС" name="sendSMS" v-model="sendSMS" />
+			<span>{{ sendSMS }}</span>
+			<Select :options="groups" label="Группа клиентов*" name="selectGroup" />
+			<Select :options="doctors" label="Лечащий врач" name="selectDoctor" />
+		</div>
 		<span>Адрес</span>
-		<Addr-info :addrInfoData="addrInfoData" />
+		<div class="addrContainer">
+			<Input label="Индекс" name="index" type="text" />
+			<Input label="Страна" name="country" type="text" />
+			<Input label="Область" name="region" type="text" />
+			<Input label="Город*" name="city" type="text" />
+			<Input label="Улица" name="street" type="text" />
+			<Input label="Дом" name="building" type="text" />
+		</div>
 		<span>Паспортные данные</span>
-		<Pass-info :passInfoData="passInfoData" />
+		<div class="passInfoContainer">
+			<Select
+				class="passInfoItem"
+				:options="id"
+				name="identifier"
+				label="Тип документа*"
+			/>
+			<Input label="Серия" name="passSeries" type="text" />
+			<Input label="Номер" name="passNumber" type="text" />
+			<Input label="Кем выдан" name="placeOfIssue" type="text" />
+			<Input label="Дата выдачи*" name="dateOfIssue" type="date" />
+		</div>
 		<Button />
 	</form>
 </template>
 
 <script lang="ts">
-import AddrInfo from './AddrInfo.vue'
-import MainInfo from './MainInfo.vue'
-import PassInfo from './PassInfo.vue'
+import Vue from 'vue'
+import { minLength, required } from 'vuelidate/lib/validators'
 import Button from './UI/Button.vue'
+import Checkbox from './UI/Checkbox.vue'
+import Input from './UI/Input.vue'
+import Select from './UI/Select.vue'
 
-export default {
+export default Vue.extend({
 	name: 'Form',
 	components: {
-		MainInfo,
-		AddrInfo,
-		PassInfo,
 		Button,
+		Input,
+		Select,
+		Checkbox,
 	},
 	data: function () {
 		return {
-			mainInfoData: {
-				firstName: '',
-				lastName: '',
-				surName: '',
-				birth: '',
-				phoneNumber: '',
-				gender: '',
-				selectGroup: '',
-				selectDoctor: '',
-				sendSMS: false,
-			},
-			addrInfoData: {
-				index: '',
-				country: '',
-				region: '',
-				street: '',
-				city: '',
-				building: '',
-			},
-			passInfoData: {
-				identifier: '',
-				passSeries: '',
-				passNumber: '',
-				placeOfIssue: '',
-				dateOfIssue: '',
-			},
+			id: ['Паспорт', 'Свидетельство о рождении', 'Вод. удостоверение'],
+			groups: ['VIP', 'Проблемные', 'ОМС'],
+			doctors: ['Иванов', 'Захаров', 'Чернышева'],
+			female: false,
+			male: false,
+			firstName: null,
+			lastName: null,
+			surName: null,
+			birth: null,
+			phoneNumber: null,
+			gender: null,
+			selectGroup: null,
+			selectDoctor: null,
+			sendSMS: 'true',
+			index: null,
+			country: null,
+			region: null,
+			street: null,
+			city: null,
+			building: null,
+			selectID: null,
+			passSeries: null,
+			passNumber: null,
+			placeOfIssue: null,
+			dateOfIssue: null,
 		}
 	},
-}
+	validations: {
+		lastName: {
+			required,
+			minLength: minLength(4),
+		},
+	},
+})
 </script>
 
 <style lang="sass">
-form
+.client-form
   display: flex
   flex-flow: column wrap
   gap: 1rem

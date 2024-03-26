@@ -1,26 +1,40 @@
 <template>
-	<div class="input-text-container">
-		<label class="input-text-label" :for="name">{{ label }}</label>
-		<input class="input-text-input" type="text" :name="name" :id="name" />
+	<div class="input-container">
+		<label class="input-label" :for="name">{{ label }}</label>
+		<input
+			class="input"
+			:type="type"
+			:id="name"
+			:value="value"
+			@input="onInput"
+		/>
 	</div>
 </template>
 
 <script lang="ts">
-export default {
+import Vue from 'vue'
+export default Vue.extend({
 	name: 'Input',
 	props: {
 		name: String,
 		label: String,
+		type: String,
+		value: String,
 	},
-}
+	methods: {
+		onInput(event: Event) {
+			this.$emit('input', (event.target as HTMLInputElement).value)
+		},
+	},
+})
 </script>
 
 <style lang="sass">
-.input-text-label
+.input-label
   font-size: 0.8rem
   margin-bottom: 0.25rem
   display: block
-.input-text-input
+.input
   display: block
   height: calc(1rem + 2px)
   padding: 0.375rem 0.75rem
@@ -34,4 +48,10 @@ export default {
   border: 1px solid #bdbdbd
   border-radius: 0.25rem
   transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out
+  &:focus
+    color: #212529
+    background-color: #fff
+    border-color: #bdbdbd
+    outline: 0
+    box-shadow: 0 0 0 0.2rem rgba(158, 158, 158, 0.25)
 </style>

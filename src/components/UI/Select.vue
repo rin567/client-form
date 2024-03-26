@@ -1,7 +1,7 @@
 <template>
 	<div class="select-container">
 		<label class="select-label" :for="name">{{ label }}</label>
-		<select class="select-select" :name="name">
+		<select class="select" :id="name" v-model="currentValue">
 			<option v-for="(option, index) in options" :key="index">
 				{{ option }}
 			</option>
@@ -12,6 +12,11 @@
 <script lang="ts">
 export default {
 	name: 'Select',
+	data: function () {
+		return {
+			currentValue: null,
+		}
+	},
 	props: {
 		name: String,
 		label: String,
@@ -25,8 +30,8 @@ export default {
   margin-bottom: 0.25rem
   display: block
   font-size: 0.8rem
-.select-select
-  isplay: block
+.select
+  display: block
   height: calc(1.85rem + 2px)
   padding: 0.375rem 0.75rem
   font-family: inherit
