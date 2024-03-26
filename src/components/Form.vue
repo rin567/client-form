@@ -3,13 +3,30 @@
 		<legend>Создание нового клиента</legend>
 		<span>Основная информация</span>
 		<div class="mainInfoContainer">
-			<Input label="Фамилия*" type="text" v-model.trim="$v.lastName.$model" />
-			<div class="error" v-if="!$v.lastName.required">Field is required</div>
-			<div class="error" v-if="!$v.lastName.minLength">
-				Name must have at least {{ $v.lastName.$params.minLength.min }} letters.
+			<Input
+				label="Фамилия*"
+				type="text"
+				v-model.trim="$v.lastName.$model"
+				:inputError="$v.lastName.$error"
+			/>
+			<div class="error" v-if="!$v.lastName.required && $v.lastName.$dirty">
+				Обязательное поле
 			</div>
-			<Input label="Имя*" type="text" v-model="firstName" />
-			<Input label="Отчество" type="text" v-model="surName" />
+			<Input
+				label="Имя*"
+				type="text"
+				v-model.trim="$v.firstName.$model"
+				:inputError="$v.firstName.$error"
+			/>
+			<div class="error" v-if="!$v.firstName.required && $v.firstName.$dirty">
+				Обязательное поле
+			</div>
+			<Input
+				label="Отчество"
+				type="text"
+				v-model.trim="$v.surName.$model"
+				:inputError="$v.surName.$error"
+			/>
 			<Input label="Дата рождения*" type="date" v-model="birth" />
 			<span>Пол</span>
 			<Checkbox label="Женщина" name="female" />
@@ -48,7 +65,7 @@
 
 <script lang="ts">
 import Vue from 'vue'
-import { minLength, required } from 'vuelidate/lib/validators'
+import { maxLength, required } from 'vuelidate/lib/validators'
 import Button from './UI/Button.vue'
 import Checkbox from './UI/Checkbox.vue'
 import Input from './UI/Input.vue'
@@ -94,8 +111,20 @@ export default Vue.extend({
 	validations: {
 		lastName: {
 			required,
-			minLength: minLength(4),
+			maxLength: maxLength(15),
+			alpha: val => /^[а-яё]*$/i.test(val),
 		},
+		firstName: {
+			required,
+			maxLength: maxLength(15),
+			alpha: val => /^[а-яё]*$/i.test(val),
+		},
+		surName: {
+			maxLength: maxLength(15),
+			alpha: val => /^[а-яё]*$/i.test(val),
+		},
+		birth: {},
+		phoneNumber: {},
 	},
 })
 </script>
@@ -112,6 +141,9 @@ export default Vue.extend({
   margin: 5%
   padding: 3%
   box-shadow: 0 0 20px 1px rgba(0, 0 ,0, 0.2)
+.error
+  color: red
+  font-size: 0.8rem
 legend
   font-size: 1.5rem
 span

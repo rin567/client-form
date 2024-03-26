@@ -2,6 +2,7 @@
 	<div class="input-container">
 		<label class="input-label" :for="name">{{ label }}</label>
 		<input
+			:class="{ 'input-error': inputError }"
 			class="input"
 			:type="type"
 			:id="name"
@@ -20,6 +21,7 @@ export default Vue.extend({
 		label: String,
 		type: String,
 		value: String,
+		inputError: Boolean,
 	},
 	methods: {
 		onInput(event: Event) {
@@ -54,4 +56,11 @@ export default Vue.extend({
     border-color: #bdbdbd
     outline: 0
     box-shadow: 0 0 0 0.2rem rgba(158, 158, 158, 0.25)
+.input-error
+  border-color: #f00
+  &:focus
+    border-color: #f00
+    background-color: #fff
+    outline: 0
+    box-shadow: 0 0 0 0.2rem rgba(245, 142, 142, 0.25)
 </style>
