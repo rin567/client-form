@@ -1,7 +1,13 @@
 <template>
 	<div class="select-container">
 		<label class="select-label" :for="name">{{ label }}</label>
-		<select class="select" :id="name" v-model="currentValue">
+		<select
+			class="select"
+			:class="{ 'select-error': selectError }"
+			:id="name"
+			v-model="currentValue"
+			@input="updateValue"
+		>
 			<option v-for="(option, index) in options" :key="index">
 				{{ option }}
 			</option>
@@ -10,7 +16,8 @@
 </template>
 
 <script lang="ts">
-export default {
+import Vue from 'vue'
+export default Vue.extend({
 	name: 'Select',
 	data: function () {
 		return {
@@ -21,8 +28,14 @@ export default {
 		name: String,
 		label: String,
 		options: Array,
+		selectError: Boolean,
 	},
-}
+	methods: {
+		updateValue(event: Event) {
+			this.$emit('input', (event.target as HTMLSelectElement).value)
+		},
+	},
+})
 </script>
 
 <style lang="sass">
@@ -44,4 +57,17 @@ export default {
   border: 1px solid #bdbdbd
   border-radius: 0.25rem
   transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out
+  &:focus
+    color: #212529
+    background-color: #fff
+    border-color: #bdbdbd
+    outline: 0
+    box-shadow: 0 0 0 0.2rem rgba(158, 158, 158, 0.25)
+.select-error
+  border-color: #f00
+  &:focus
+    border-color: #f00
+    background-color: #fff
+    outline: 0
+    box-shadow: 0 0 0 0.2rem rgba(245, 142, 142, 0.25)
 </style>

@@ -1,5 +1,5 @@
 <template>
-	<form class="client-form">
+	<form class="client-form" @submit.prevent="onSubmit">
 		<legend>Создание нового клиента</legend>
 		<span>Основная информация</span>
 		<div class="mainInfoContainer">
@@ -19,34 +19,128 @@
 				type="text"
 				v-model.trim="$v.firstName.$model"
 				:inputError="$v.firstName.$error"
+				:maxLength="$v.firstName.$params.maxLength.max"
 			/>
 			<div class="error" v-if="!$v.firstName.required && $v.firstName.$dirty">
 				Обязательное поле
 			</div>
+			<div class="error" v-if="!$v.firstName.alpha">Используйте кириллицу</div>
 			<Input
 				label="Отчество"
 				type="text"
 				v-model.trim="$v.surName.$model"
 				:inputError="$v.surName.$error"
+				:maxLength="$v.surName.$params.maxLength.max"
 			/>
-			<Input label="Дата рождения*" type="date" v-model="birth" />
-			<span>Пол</span>
-			<Checkbox label="Женщина" name="female" />
-			<Checkbox label="Мужчина" name="male" />
-			<Input label="Номер телефона*" type="tel" v-model="phoneNumber" />
+			<div class="error" v-if="!$v.surName.alpha">Используйте кириллицу</div>
+			<Input
+				label="Дата рождения*"
+				type="date"
+				v-model.trim="$v.birth.$model"
+				:inputError="$v.phoneNumber.$error"
+			/>
+			<div class="error" v-if="!$v.birth.required && $v.birth.$dirty">
+				Обязательное поле
+			</div>
+			<Radio :options="genders" label="Пол" v-model="gender" />
+			<Input
+				label="Номер телефона*"
+				type="tel"
+				v-model="phoneNumber"
+				:inputError="$v.phoneNumber.$error"
+				:maxLength="$v.phoneNumber.$params.maxLength.max"
+			/>
+			<div class="error" v-if="!$v.phoneNumber.phoneNum">
+				Введите номер в формате: 79123456789
+			</div>
+			<div
+				class="error"
+				v-if="!$v.phoneNumber.required && $v.phoneNumber.$dirty"
+			>
+				Обязательное поле
+			</div>
 			<Checkbox label="Не отправлять СМС" name="sendSMS" v-model="sendSMS" />
-			<span>{{ sendSMS }}</span>
-			<Select :options="groups" label="Группа клиентов*" name="selectGroup" />
-			<Select :options="doctors" label="Лечащий врач" name="selectDoctor" />
+			<Select
+				:options="groups"
+				label="Группа клиентов*"
+				name="selectGroup"
+				v-model="selectGroup"
+				:selectError="submitStatus == 'ERROR' && !selectGroup"
+			/>
+			<div class="error" v-if="submitStatus == 'ERROR' && !selectGroup">
+				Обязательное поле
+			</div>
+			<Select
+				:options="doctors"
+				label="Лечащий врач"
+				name="selectDoctor"
+				v-model="selectDoctor"
+			/>
 		</div>
 		<span>Адрес</span>
 		<div class="addrContainer">
-			<Input label="Индекс" name="index" type="text" />
-			<Input label="Страна" name="country" type="text" />
-			<Input label="Область" name="region" type="text" />
-			<Input label="Город*" name="city" type="text" />
-			<Input label="Улица" name="street" type="text" />
-			<Input label="Дом" name="building" type="text" />
+			<Input
+				label="Индекс"
+				name="index"
+				type="text"
+				v-model.trim="$v.index.$model"
+				:inputError="$v.index.$error"
+				:maxLength="$v.index.$params.maxLength.max"
+			/>
+			<div class="error" v-if="!$v.index.minLength && $v.index.numeric">
+				Минимальная длина {{ $v.index.$params.minLength.min }} символов
+			</div>
+			<div class="error" v-if="!$v.index.numeric">Используйте только цифры</div>
+			<Input
+				label="Страна"
+				name="country"
+				type="text"
+				v-model.trim="$v.country.$model"
+				:inputError="$v.country.$error"
+				:maxLength="$v.country.$params.maxLength.max"
+			/>
+			<div class="error" v-if="!$v.country.alpha">Используйте кириллицу</div>
+			<Input
+				label="Область"
+				name="region"
+				type="text"
+				v-model.trim="$v.region.$model"
+				:inputError="$v.region.$error"
+				:maxLength="$v.region.$params.maxLength.max"
+			/>
+			<div class="error" v-if="!$v.region.alpha">Используйте кириллицу</div>
+			<Input
+				label="Город*"
+				name="city"
+				type="text"
+				v-model.trim="$v.city.$model"
+				:inputError="$v.city.$error"
+				:maxLength="$v.city.$params.maxLength.max"
+			/>
+			<div class="error" v-if="!$v.city.required && $v.city.$dirty">
+				Обязательное поле
+			</div>
+			<div class="error" v-if="!$v.city.alpha">Используйте кириллицу</div>
+			<Input
+				label="Улица"
+				name="street"
+				type="text"
+				v-model.trim="$v.street.$model"
+				:inputError="$v.street.$error"
+				:maxLength="$v.street.$params.maxLength.max"
+			/>
+			<div class="error" v-if="!$v.street.alphaNum">Используйте кириллицу</div>
+			<Input
+				label="Дом"
+				name="building"
+				type="text"
+				v-model.trim="$v.building.$model"
+				:inputError="$v.building.$error"
+				:maxLength="$v.building.$params.maxLength.max"
+			/>
+			<div class="error" v-if="!$v.building.numeric">
+				Используйте только цифры
+			</div>
 		</div>
 		<span>Паспортные данные</span>
 		<div class="passInfoContainer">
@@ -55,24 +149,97 @@
 				:options="id"
 				name="identifier"
 				label="Тип документа*"
+				v-model="selectID"
+				:selectError="submitStatus == 'ERROR' && !selectID"
 			/>
-			<Input label="Серия" name="passSeries" type="text" />
-			<Input label="Номер" name="passNumber" type="text" />
-			<Input label="Кем выдан" name="placeOfIssue" type="text" />
-			<Input label="Дата выдачи*" name="dateOfIssue" type="date" />
+			<div class="error" v-if="submitStatus == 'ERROR' && !selectID">
+				Обязательное поле
+			</div>
+			<Input
+				label="Серия"
+				name="passSeries"
+				type="text"
+				v-model.trim="$v.passSeries.$model"
+				:inputError="$v.passSeries.$error"
+				:maxLength="$v.passSeries.$params.maxLength.max"
+			/>
+			<div
+				class="error"
+				v-if="!$v.passSeries.minLength && $v.passSeries.numeric"
+			>
+				Минимальная длина {{ $v.passSeries.$params.minLength.min }} символов
+			</div>
+			<div class="error" v-if="!$v.passSeries.numeric">
+				Используйте только цифры
+			</div>
+			<Input
+				label="Номер"
+				name="passNumber"
+				type="text"
+				v-model.trim="$v.passNumber.$model"
+				:inputError="$v.passNumber.$error"
+				:maxLength="$v.passNumber.$params.maxLength.max"
+			/>
+			<div
+				class="error"
+				v-if="!$v.passNumber.minLength && $v.passNumber.numeric"
+			>
+				Минимальная длина {{ $v.passNumber.$params.minLength.min }} символов
+			</div>
+			<div class="error" v-if="!$v.passNumber.numeric">
+				Используйте только цифры
+			</div>
+			<Input
+				label="Кем выдан"
+				name="placeOfIssue"
+				type="text"
+				v-model.trim="$v.placeOfIssue.$model"
+				:inputError="$v.placeOfIssue.$error"
+				:maxLength="$v.placeOfIssue.$params.maxLength.max"
+			/>
+			<div class="error" v-if="!$v.placeOfIssue.alphaNum">
+				Используйте кириллицу
+			</div>
+			<Input
+				label="Дата выдачи*"
+				name="dateOfIssue"
+				type="date"
+				v-model.trim="$v.dateOfIssue.$model"
+				:inputError="$v.dateOfIssue.$error"
+			/>
+			<div
+				class="error"
+				v-if="!$v.dateOfIssue.required && $v.dateOfIssue.$dirty"
+			>
+				Обязательное поле
+			</div>
 		</div>
 		<Button />
+		<p v-if="submitStatus === 'OK'">Создан новый клиент</p>
+		<p v-if="submitStatus === 'ERROR'">
+			Пожалуйста, заполните все обязательные поля
+		</p>
+		<p v-if="submitStatus === 'PENDING'">Отправка данных...</p>
 	</form>
 </template>
 
 <script lang="ts">
 import Vue from 'vue'
-import { helpers, maxLength, required } from 'vuelidate/lib/validators'
+import {
+	helpers,
+	maxLength,
+	minLength,
+	numeric,
+	required,
+} from 'vuelidate/lib/validators'
 import Button from './UI/Button.vue'
 import Checkbox from './UI/Checkbox.vue'
 import Input from './UI/Input.vue'
+import Radio from './UI/Radio.vue'
 import Select from './UI/Select.vue'
-const alpha = helpers.regex('alpha', /^[а-яё]*$/i)
+const alpha = helpers.regex('alpha', /^[а-яё-]*$/i)
+const alphaNum = helpers.regex('alphaNum', /^[а-яё0-9-№\s]*$/i)
+const phoneNum = helpers.regex('phoneNum', /^([7]{1}[0-9]{10})*$/i)
 export default Vue.extend({
 	name: 'Form',
 	components: {
@@ -80,14 +247,24 @@ export default Vue.extend({
 		Input,
 		Select,
 		Checkbox,
+		Radio,
 	},
 	data: function () {
 		return {
 			id: ['Паспорт', 'Свидетельство о рождении', 'Вод. удостоверение'],
 			groups: ['VIP', 'Проблемные', 'ОМС'],
 			doctors: ['Иванов', 'Захаров', 'Чернышева'],
-			female: false,
-			male: false,
+			genders: [
+				{
+					code: 'male',
+					name: 'Мужской',
+				},
+				{
+					code: 'female',
+					name: 'Женский',
+				},
+			],
+			submitStatus: '',
 			firstName: null,
 			lastName: null,
 			surName: null,
@@ -114,17 +291,88 @@ export default Vue.extend({
 		lastName: {
 			required,
 			alpha,
-			maxLength: maxLength(20),
+			maxLength: maxLength(25),
 		},
 		firstName: {
 			required,
 			alpha,
+			maxLength: maxLength(25),
 		},
 		surName: {
 			alpha,
+			maxLength: maxLength(25),
 		},
-		birth: {},
-		phoneNumber: {},
+		//dop
+		birth: {
+			required,
+		},
+		//dop
+		phoneNumber: {
+			required,
+			phoneNum,
+			maxLength: maxLength(11),
+		},
+		index: {
+			minLength: minLength(6),
+			maxLength: maxLength(6),
+			numeric,
+		},
+		country: {
+			alpha,
+			maxLength: maxLength(25),
+		},
+		region: {
+			alpha,
+			maxLength: maxLength(25),
+		},
+		street: {
+			alphaNum,
+			maxLength: maxLength(25),
+		},
+		city: {
+			required,
+			alpha,
+			maxLength: maxLength(25),
+		},
+		building: {
+			numeric,
+			maxLength: maxLength(25),
+		},
+		passSeries: {
+			minLength: minLength(4),
+			maxLength: maxLength(4),
+			numeric,
+		},
+		passNumber: {
+			maxLength: maxLength(6),
+			minLength: minLength(6),
+			numeric,
+		},
+		placeOfIssue: {
+			alphaNum,
+			maxLength: maxLength(100),
+		},
+		//dop
+		dateOfIssue: {
+			required,
+		},
+	},
+	methods: {
+		onSubmit() {
+			if (!this.selectGroup && !this.selectID) {
+				this.submitStatus = 'ERROR'
+			}
+			this.$v.$touch()
+			if (this.$v.$invalid) {
+				this.submitStatus = 'ERROR'
+			} else {
+				// submit logic here
+				this.submitStatus = 'PENDING'
+				setTimeout(() => {
+					this.submitStatus = 'OK'
+				}, 500)
+			}
+		},
 	},
 })
 </script>
