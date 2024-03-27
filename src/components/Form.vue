@@ -8,10 +8,12 @@
 				type="text"
 				v-model.trim="$v.lastName.$model"
 				:inputError="$v.lastName.$error"
+				:maxLength="$v.lastName.$params.maxLength.max"
 			/>
 			<div class="error" v-if="!$v.lastName.required && $v.lastName.$dirty">
 				Обязательное поле
 			</div>
+			<div class="error" v-if="!$v.lastName.alpha">Используйте кириллицу</div>
 			<Input
 				label="Имя*"
 				type="text"
@@ -65,12 +67,12 @@
 
 <script lang="ts">
 import Vue from 'vue'
-import { maxLength, required } from 'vuelidate/lib/validators'
+import { helpers, maxLength, required } from 'vuelidate/lib/validators'
 import Button from './UI/Button.vue'
 import Checkbox from './UI/Checkbox.vue'
 import Input from './UI/Input.vue'
 import Select from './UI/Select.vue'
-
+const alpha = helpers.regex('alpha', /^[а-яё]*$/i)
 export default Vue.extend({
 	name: 'Form',
 	components: {
@@ -111,17 +113,15 @@ export default Vue.extend({
 	validations: {
 		lastName: {
 			required,
-			maxLength: maxLength(15),
-			alpha: val => /^[а-яё]*$/i.test(val),
+			alpha,
+			maxLength: maxLength(20),
 		},
 		firstName: {
 			required,
-			maxLength: maxLength(15),
-			alpha: val => /^[а-яё]*$/i.test(val),
+			alpha,
 		},
 		surName: {
-			maxLength: maxLength(15),
-			alpha: val => /^[а-яё]*$/i.test(val),
+			alpha,
 		},
 		birth: {},
 		phoneNumber: {},

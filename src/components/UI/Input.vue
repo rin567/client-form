@@ -8,6 +8,7 @@
 			:id="name"
 			:value="value"
 			@input="onInput"
+			:maxlength="maxLength"
 		/>
 	</div>
 </template>
@@ -22,6 +23,7 @@ export default Vue.extend({
 		type: String,
 		value: String,
 		inputError: Boolean,
+		maxLength: Number,
 	},
 	methods: {
 		onInput(event: Event) {
