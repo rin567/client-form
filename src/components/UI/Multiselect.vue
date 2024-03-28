@@ -1,48 +1,52 @@
 <template>
-	<div class="input-container">
-		<label class="input-label" :for="name">{{ label }}</label>
-		<input
-			:class="{ 'input-error': inputError }"
-			:style="{ width: width + 'px' }"
-			class="input"
-			:type="type"
+	<div class="select-container">
+		<label class="select-label" :for="name">{{ label }}</label>
+		<select
+			class="select"
+			:class="{ 'select-error': selectError }"
 			:id="name"
-			:value="value"
-			@input="onInput"
-			:maxlength="maxLength"
-		/>
+			v-model="currentValue"
+			@input="updateValue"
+			multiple
+		>
+			<option v-for="(option, index) in options" :key="index">
+				{{ option }}
+			</option>
+		</select>
 	</div>
 </template>
 
 <script lang="ts">
 import Vue from 'vue'
 export default Vue.extend({
-	name: 'Input',
+	name: 'Multiselect',
+	data: function () {
+		return {
+			currentValue: null,
+		}
+	},
 	props: {
 		name: String,
 		label: String,
-		type: String,
-		value: String,
-		inputError: Boolean,
-		maxLength: Number,
-		width: Number,
+		options: Array,
+		selectError: Boolean,
 	},
 	methods: {
-		onInput(event: Event) {
-			this.$emit('input', (event.target as HTMLInputElement).value)
+		updateValue(event: Event) {
+			this.$emit('input', (event.target as HTMLSelectElement).value)
 		},
 	},
 })
 </script>
 
 <style lang="sass">
-.input-label
-  font-size: 0.8rem
+.select-label
   margin-bottom: 0.25rem
   display: block
-.input
+  font-size: 0.8rem
+.select
   display: block
-  height: calc(1rem + 2px)
+  height: calc(1.85rem + 2px)
   padding: 0.375rem 0.75rem
   font-family: inherit
   font-size: 1rem
@@ -60,7 +64,7 @@ export default Vue.extend({
     border-color: #bdbdbd
     outline: 0
     box-shadow: 0 0 0 0.2rem rgba(158, 158, 158, 0.25)
-.input-error
+.select-error
   border-color: #f00
   &:focus
     border-color: #f00

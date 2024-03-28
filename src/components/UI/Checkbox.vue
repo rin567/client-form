@@ -36,4 +36,8 @@ export default Vue.extend({
 <style lang="sass">
 .checkbox-label
   font-size: 1rem
+.checkbox-container
+  display: flex
+  align-items: center
+  padding-top: 1rem
 </style>

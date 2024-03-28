@@ -2,73 +2,88 @@
 	<form class="client-form" @submit.prevent="onSubmit">
 		<legend>Создание нового клиента</legend>
 		<span>Основная информация</span>
-		<div class="mainInfoContainer">
-			<Input
-				label="Фамилия*"
-				type="text"
-				v-model.trim="$v.lastName.$model"
-				:inputError="$v.lastName.$error"
-				:maxLength="$v.lastName.$params.maxLength.max"
-			/>
-			<div class="error" v-if="!$v.lastName.required && $v.lastName.$dirty">
-				Обязательное поле
+		<div class="form-section">
+			<div class="form-section-item">
+				<Input
+					label="Фамилия*"
+					type="text"
+					v-model.trim="$v.lastName.$model"
+					:inputError="$v.lastName.$error"
+					:maxLength="$v.lastName.$params.maxLength.max"
+				/>
+				<div class="error" v-if="!$v.lastName.required && $v.lastName.$dirty">
+					Обязательное поле
+				</div>
+				<div class="error" v-if="!$v.lastName.alpha">Используйте кириллицу</div>
 			</div>
-			<div class="error" v-if="!$v.lastName.alpha">Используйте кириллицу</div>
-			<Input
-				label="Имя*"
-				type="text"
-				v-model.trim="$v.firstName.$model"
-				:inputError="$v.firstName.$error"
-				:maxLength="$v.firstName.$params.maxLength.max"
-			/>
-			<div class="error" v-if="!$v.firstName.required && $v.firstName.$dirty">
-				Обязательное поле
+			<div class="form-section-item">
+				<Input
+					label="Имя*"
+					type="text"
+					v-model.trim="$v.firstName.$model"
+					:inputError="$v.firstName.$error"
+					:maxLength="$v.firstName.$params.maxLength.max"
+				/>
+				<div class="error" v-if="!$v.firstName.required && $v.firstName.$dirty">
+					Обязательное поле
+				</div>
+				<div class="error" v-if="!$v.firstName.alpha">
+					Используйте кириллицу
+				</div>
 			</div>
-			<div class="error" v-if="!$v.firstName.alpha">Используйте кириллицу</div>
-			<Input
-				label="Отчество"
-				type="text"
-				v-model.trim="$v.surName.$model"
-				:inputError="$v.surName.$error"
-				:maxLength="$v.surName.$params.maxLength.max"
-			/>
-			<div class="error" v-if="!$v.surName.alpha">Используйте кириллицу</div>
-			<Input
-				label="Дата рождения*"
-				type="date"
-				v-model.trim="$v.birth.$model"
-				:inputError="$v.phoneNumber.$error"
-			/>
-			<div class="error" v-if="!$v.birth.required && $v.birth.$dirty">
-				Обязательное поле
+			<div class="form-section-item">
+				<Input
+					label="Отчество"
+					type="text"
+					v-model.trim="$v.surName.$model"
+					:inputError="$v.surName.$error"
+					:maxLength="$v.surName.$params.maxLength.max"
+				/>
+				<div class="error" v-if="!$v.surName.alpha">Используйте кириллицу</div>
+			</div>
+			<div class="form-section-item">
+				<Input
+					label="Дата рождения*"
+					type="date"
+					v-model.trim="$v.birth.$model"
+					:inputError="$v.phoneNumber.$error"
+				/>
+				<div class="error" v-if="!$v.birth.required && $v.birth.$dirty">
+					Обязательное поле
+				</div>
 			</div>
 			<Radio :options="genders" label="Пол" v-model="gender" />
-			<Input
-				label="Номер телефона*"
-				type="tel"
-				v-model="phoneNumber"
-				:inputError="$v.phoneNumber.$error"
-				:maxLength="$v.phoneNumber.$params.maxLength.max"
-			/>
-			<div class="error" v-if="!$v.phoneNumber.phoneNum">
-				Введите номер в формате: 79123456789
-			</div>
-			<div
-				class="error"
-				v-if="!$v.phoneNumber.required && $v.phoneNumber.$dirty"
-			>
-				Обязательное поле
+			<div class="form-section-item">
+				<Input
+					label="Номер телефона*"
+					type="tel"
+					v-model="phoneNumber"
+					:inputError="$v.phoneNumber.$error"
+					:maxLength="$v.phoneNumber.$params.maxLength.max"
+					:width="100"
+				/>
+				<div class="error" v-if="!$v.phoneNumber.phoneNum">
+					Введите номер в формате: 79123456789
+				</div>
+				<div
+					class="error"
+					v-if="!$v.phoneNumber.required && $v.phoneNumber.$dirty"
+				>
+					Обязательное поле
+				</div>
 			</div>
 			<Checkbox label="Не отправлять СМС" name="sendSMS" v-model="sendSMS" />
-			<Select
-				:options="groups"
-				label="Группа клиентов*"
-				name="selectGroup"
-				v-model="selectGroup"
-				:selectError="submitStatus == 'ERROR' && !selectGroup"
-			/>
-			<div class="error" v-if="submitStatus == 'ERROR' && !selectGroup">
-				Обязательное поле
+			<div class="form-section-item">
+				<Multiselect
+					:options="groups"
+					label="Группа клиентов*"
+					name="selectGroup"
+					v-model="selectGroup"
+					:selectError="submitStatus == 'ERROR' && !selectGroup"
+				/>
+				<div class="error" v-if="submitStatus == 'ERROR' && !selectGroup">
+					Обязательное поле
+				</div>
 			</div>
 			<Select
 				:options="doctors"
@@ -78,148 +93,174 @@
 			/>
 		</div>
 		<span>Адрес</span>
-		<div class="addrContainer">
-			<Input
-				label="Индекс"
-				name="index"
-				type="text"
-				v-model.trim="$v.index.$model"
-				:inputError="$v.index.$error"
-				:maxLength="$v.index.$params.maxLength.max"
-			/>
-			<div class="error" v-if="!$v.index.minLength && $v.index.numeric">
-				Минимальная длина {{ $v.index.$params.minLength.min }} символов
+		<div class="form-section">
+			<div class="form-section-item">
+				<Input
+					label="Индекс"
+					name="index"
+					type="text"
+					v-model.trim="$v.index.$model"
+					:inputError="$v.index.$error"
+					:maxLength="$v.index.$params.maxLength.max"
+					:width="55"
+				/>
+				<div class="error" v-if="!$v.index.minLength && $v.index.numeric">
+					Минимальная длина {{ $v.index.$params.minLength.min }} символов
+				</div>
+				<div class="error" v-if="!$v.index.numeric">
+					Используйте только цифры
+				</div>
 			</div>
-			<div class="error" v-if="!$v.index.numeric">Используйте только цифры</div>
-			<Input
-				label="Страна"
-				name="country"
-				type="text"
-				v-model.trim="$v.country.$model"
-				:inputError="$v.country.$error"
-				:maxLength="$v.country.$params.maxLength.max"
-			/>
-			<div class="error" v-if="!$v.country.alpha">Используйте кириллицу</div>
-			<Input
-				label="Область"
-				name="region"
-				type="text"
-				v-model.trim="$v.region.$model"
-				:inputError="$v.region.$error"
-				:maxLength="$v.region.$params.maxLength.max"
-			/>
-			<div class="error" v-if="!$v.region.alpha">Используйте кириллицу</div>
-			<Input
-				label="Город*"
-				name="city"
-				type="text"
-				v-model.trim="$v.city.$model"
-				:inputError="$v.city.$error"
-				:maxLength="$v.city.$params.maxLength.max"
-			/>
-			<div class="error" v-if="!$v.city.required && $v.city.$dirty">
-				Обязательное поле
+			<div class="form-section-item">
+				<Input
+					label="Страна"
+					name="country"
+					type="text"
+					v-model.trim="$v.country.$model"
+					:inputError="$v.country.$error"
+					:maxLength="$v.country.$params.maxLength.max"
+				/>
+				<div class="error" v-if="!$v.country.alpha">Используйте кириллицу</div>
 			</div>
-			<div class="error" v-if="!$v.city.alpha">Используйте кириллицу</div>
-			<Input
-				label="Улица"
-				name="street"
-				type="text"
-				v-model.trim="$v.street.$model"
-				:inputError="$v.street.$error"
-				:maxLength="$v.street.$params.maxLength.max"
-			/>
-			<div class="error" v-if="!$v.street.alphaNum">Используйте кириллицу</div>
-			<Input
-				label="Дом"
-				name="building"
-				type="text"
-				v-model.trim="$v.building.$model"
-				:inputError="$v.building.$error"
-				:maxLength="$v.building.$params.maxLength.max"
-			/>
-			<div class="error" v-if="!$v.building.numeric">
-				Используйте только цифры
+			<div class="form-section-item">
+				<Input
+					label="Область"
+					name="region"
+					type="text"
+					v-model.trim="$v.region.$model"
+					:inputError="$v.region.$error"
+					:maxLength="$v.region.$params.maxLength.max"
+				/>
+				<div class="error" v-if="!$v.region.alpha">Используйте кириллицу</div>
+			</div>
+			<div class="form-section-item">
+				<Input
+					label="Город*"
+					name="city"
+					type="text"
+					v-model.trim="$v.city.$model"
+					:inputError="$v.city.$error"
+					:maxLength="$v.city.$params.maxLength.max"
+				/>
+				<div class="error" v-if="!$v.city.required && $v.city.$dirty">
+					Обязательное поле
+				</div>
+				<div class="error" v-if="!$v.city.alpha">Используйте кириллицу</div>
+			</div>
+			<div class="form-section-item">
+				<Input
+					label="Улица"
+					name="street"
+					type="text"
+					v-model.trim="$v.street.$model"
+					:inputError="$v.street.$error"
+					:maxLength="$v.street.$params.maxLength.max"
+				/>
+				<div class="error" v-if="!$v.street.alphaNum">
+					Используйте кириллицу
+				</div>
+			</div>
+			<div class="form-section-item">
+				<Input
+					label="Дом"
+					name="building"
+					type="text"
+					v-model.trim="$v.building.$model"
+					:inputError="$v.building.$error"
+					:maxLength="$v.building.$params.maxLength.max"
+					:width="38"
+				/>
+				<div class="error" v-if="!$v.building.numeric">
+					Используйте только цифры
+				</div>
 			</div>
 		</div>
 		<span>Паспортные данные</span>
-		<div class="passInfoContainer">
-			<Select
-				class="passInfoItem"
-				:options="id"
-				name="identifier"
-				label="Тип документа*"
-				v-model="selectID"
-				:selectError="submitStatus == 'ERROR' && !selectID"
-			/>
-			<div class="error" v-if="submitStatus == 'ERROR' && !selectID">
-				Обязательное поле
+		<div class="form-section">
+			<div class="form-section-item">
+				<Select
+					class="passInfoItem"
+					:options="id"
+					name="identifier"
+					label="Тип документа*"
+					v-model="selectID"
+					:selectError="submitStatus == 'ERROR' && !selectID"
+				/>
+				<div class="error" v-if="submitStatus == 'ERROR' && !selectID">
+					Обязательное поле
+				</div>
 			</div>
-			<Input
-				label="Серия"
-				name="passSeries"
-				type="text"
-				v-model.trim="$v.passSeries.$model"
-				:inputError="$v.passSeries.$error"
-				:maxLength="$v.passSeries.$params.maxLength.max"
-			/>
-			<div
-				class="error"
-				v-if="!$v.passSeries.minLength && $v.passSeries.numeric"
-			>
-				Минимальная длина {{ $v.passSeries.$params.minLength.min }} символов
+			<div class="form-section-item">
+				<Input
+					label="Серия"
+					name="passSeries"
+					type="text"
+					:width="38"
+					v-model.trim="$v.passSeries.$model"
+					:inputError="$v.passSeries.$error"
+					:maxLength="$v.passSeries.$params.maxLength.max"
+				/>
+				<div
+					class="error"
+					v-if="!$v.passSeries.minLength && $v.passSeries.numeric"
+				>
+					Минимальная длина {{ $v.passSeries.$params.minLength.min }} символа
+				</div>
+				<div class="error" v-if="!$v.passSeries.numeric">
+					Используйте только цифры
+				</div>
 			</div>
-			<div class="error" v-if="!$v.passSeries.numeric">
-				Используйте только цифры
+			<div class="form-section-item">
+				<Input
+					label="Номер"
+					name="passNumber"
+					type="text"
+					v-model.trim="$v.passNumber.$model"
+					:inputError="$v.passNumber.$error"
+					:maxLength="$v.passNumber.$params.maxLength.max"
+					:width="55"
+				/>
+				<div
+					class="error"
+					v-if="!$v.passNumber.minLength && $v.passNumber.numeric"
+				>
+					Минимальная длина {{ $v.passNumber.$params.minLength.min }} символов
+				</div>
+				<div class="error" v-if="!$v.passNumber.numeric">
+					Используйте только цифры
+				</div>
 			</div>
-			<Input
-				label="Номер"
-				name="passNumber"
-				type="text"
-				v-model.trim="$v.passNumber.$model"
-				:inputError="$v.passNumber.$error"
-				:maxLength="$v.passNumber.$params.maxLength.max"
-			/>
-			<div
-				class="error"
-				v-if="!$v.passNumber.minLength && $v.passNumber.numeric"
-			>
-				Минимальная длина {{ $v.passNumber.$params.minLength.min }} символов
+			<div class="form-section-item">
+				<Input
+					label="Дата выдачи*"
+					name="dateOfIssue"
+					type="date"
+					v-model.trim="$v.dateOfIssue.$model"
+					:inputError="$v.dateOfIssue.$error"
+				/>
+				<div
+					class="error"
+					v-if="!$v.dateOfIssue.required && $v.dateOfIssue.$dirty"
+				>
+					Обязательное поле
+				</div>
 			</div>
-			<div class="error" v-if="!$v.passNumber.numeric">
-				Используйте только цифры
-			</div>
-			<Input
-				label="Кем выдан"
-				name="placeOfIssue"
-				type="text"
-				v-model.trim="$v.placeOfIssue.$model"
-				:inputError="$v.placeOfIssue.$error"
-				:maxLength="$v.placeOfIssue.$params.maxLength.max"
-			/>
-			<div class="error" v-if="!$v.placeOfIssue.alphaNum">
-				Используйте кириллицу
-			</div>
-			<Input
-				label="Дата выдачи*"
-				name="dateOfIssue"
-				type="date"
-				v-model.trim="$v.dateOfIssue.$model"
-				:inputError="$v.dateOfIssue.$error"
-			/>
-			<div
-				class="error"
-				v-if="!$v.dateOfIssue.required && $v.dateOfIssue.$dirty"
-			>
-				Обязательное поле
+			<div class="form-section-item">
+				<Input
+					label="Кем выдан"
+					name="placeOfIssue"
+					type="text"
+					v-model.trim="$v.placeOfIssue.$model"
+					:inputError="$v.placeOfIssue.$error"
+					:maxLength="$v.placeOfIssue.$params.maxLength.max"
+				/>
+				<div class="error" v-if="!$v.placeOfIssue.alphaNum">
+					Используйте кириллицу
+				</div>
 			</div>
 		</div>
 		<Button />
-		<p v-if="submitStatus === 'OK'">Создан новый клиент</p>
-		<p v-if="submitStatus === 'ERROR'">
-			Пожалуйста, заполните все обязательные поля
-		</p>
-		<p v-if="submitStatus === 'PENDING'">Отправка данных...</p>
+		<ModalWindow v-if="submitStatus === 'OK'" v-model="submitStatus" />
 	</form>
 </template>
 
@@ -232,9 +273,11 @@ import {
 	numeric,
 	required,
 } from 'vuelidate/lib/validators'
+import ModalWindow from './ModalWindow.vue'
 import Button from './UI/Button.vue'
 import Checkbox from './UI/Checkbox.vue'
 import Input from './UI/Input.vue'
+import Multiselect from './UI/Multiselect.vue'
 import Radio from './UI/Radio.vue'
 import Select from './UI/Select.vue'
 const alpha = helpers.regex('alpha', /^[а-яё-]*$/i)
@@ -248,6 +291,8 @@ export default Vue.extend({
 		Select,
 		Checkbox,
 		Radio,
+		Multiselect,
+		ModalWindow,
 	},
 	data: function () {
 		return {
@@ -382,13 +427,18 @@ export default Vue.extend({
   display: flex
   flex-flow: column wrap
   gap: 1rem
-  max-width: 742px
+  align-items: center
   border-radius: 10px
   background-color: white
   box-sizing: border-box
   margin: 5%
   padding: 3%
   box-shadow: 0 0 20px 1px rgba(0, 0 ,0, 0.2)
+.form-section
+  display: flex
+  flex-flow: row wrap
+  max-width: 700px
+  gap: 1rem
 .error
   color: red
   font-size: 0.8rem
@@ -397,6 +447,7 @@ legend
 span
   font-size: 1rem
   color: rgb(5, 5, 215)
+  align-self: flex-start
 Button
   justify-self: center
 </style>

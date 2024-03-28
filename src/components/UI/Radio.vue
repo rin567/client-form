@@ -1,14 +1,16 @@
 <template>
 	<div class="radio-container">
 		<label class="radio-label" :for="name">{{ label }}</label>
-		<div :id="name" @input="updateValue" v-for="option in options">
-			<input
-				type="radio"
+		<div class="options-container">
+			<div
+				:id="name"
+				@input="updateValue"
+				v-for="option in options"
 				:key="option.code"
-				:value="option.code"
-				v-model="currentValue"
-			/>
-			<label for="option.name">{{ option.name }}</label>
+			>
+				<input type="radio" :value="option.code" v-model="currentValue" />
+				<label for="option.name">{{ option.name }}</label>
+			</div>
 		</div>
 	</div>
 </template>
@@ -46,4 +48,8 @@ export default Vue.extend({
 <style lang="sass">
 .radio-label
   font-size: 0.8rem
+.options-container
+  display: flex
+  gap: 0.7rem
+  margin-top: 0.5rem
 </style>
